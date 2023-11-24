@@ -1,0 +1,29 @@
+/* styles.css */
+
+/* Body styling */
+.body {
+    -fx-background-color: #f0f0f0; /* Set background color */
+}
+
+/* Button styling */
+.button {
+    -fx-background-color: #3498db; /* Set background color */
+    -fx-text-fill: #ffffff; /* Set text color */
+    -fx-font-size: 14px; /* Set font size */
+}
+
+/* Label styling */
+.label {
+    -fx-font-size: 16px; /* Set font size */
+}
+
+/* TableView styling */
+.table-view {
+    -fx-background-color: #ffffff; /* Set background color */
+}
+
+/* TableView cell styling */
+.table-cell {
+    -fx-border-color: #cccccc; /* Set border color */
+    -fx-border-width: 0.5px; /* Set border width */
+}
