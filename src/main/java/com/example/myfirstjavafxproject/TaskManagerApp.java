@@ -1,13 +1,16 @@
 package com.example.myfirstjavafxproject;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,7 +26,15 @@ public class TaskManagerApp extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) throws IOException {
+
+        FXMLLoader loader = new FXMLLoader(TaskManagerApp.class.getResource("hello-view.fxml"));
+        Parent root = loader.load();
+
+        Scene scene = new Scene(root, 600, 400);
+        stage.setScene(scene);
+        stage.setTitle("Your JavaFX App");
+        stage.show();
 
         taskManager = new TaskManager();
 
@@ -58,9 +69,9 @@ public class TaskManagerApp extends Application {
 
         layout.getChildren().addAll(addButton, editButton, deleteButton);
 
-        Scene scene = new Scene(layout, 600, 400);
-        //scene.getStylesheets().add(getClass().getResource("styles.css").toExternalForm());
-        stage.setScene(scene);
+        Scene scene1 = new Scene(layout, 600, 400);
+        scene.getStylesheets().add(TaskManagerApp.class.getResource("styles.css").toExternalForm());
+        stage.setScene(scene1);
         stage.setTitle("Task Manager");
         stage.show();
 
@@ -124,49 +135,55 @@ public class TaskManagerApp extends Application {
     }
 
     private void editTask() {
-        Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
+       try {
+           Task selectedTask = taskTable.getSelectionModel().getSelectedItem();
 
-        if (selectedTask == null) {
-            showAlert("Please select a task to edit!");
-        }
-        Dialog<Task> editDialog = new Dialog<>();
-        editDialog.setTitle("Edit Task");
+           if (selectedTask == null) {
+               showAlert("Please select a task to edit!");
+           }
+           Dialog<Task> editDialog = new Dialog<>();
+           editDialog.setTitle("Edit Task");
 
-        TextField titleField = new TextField(selectedTask.getTitle());
-        TextField descriptionField = new TextField(selectedTask.getDescription());
-        TextField priorityField = new TextField(selectedTask.getPriority());
-        DatePicker dueDatePiker = new DatePicker(selectedTask.getDueDate());
+           TextField titleField = new TextField(selectedTask.getTitle());
+           TextField descriptionField = new TextField(selectedTask.getDescription());
+           TextField priorityField = new TextField(selectedTask.getPriority());
+           DatePicker dueDatePiker = new DatePicker(selectedTask.getDueDate());
 
-        VBox editLayout = new VBox(10);
-        editLayout.getChildren().addAll(
-                new Label("Title: "), titleField,
-                new Label("Description: "), descriptionField,
-                new Label("Priority: "), priorityField,
-                new Label("Due Date: "), dueDatePiker
-        );
+           VBox editLayout = new VBox(10);
+           editLayout.getChildren().addAll(
+                   new Label("Title: "), titleField,
+                   new Label("Description: "), descriptionField,
+                   new Label("Priority: "), priorityField,
+                   new Label("Due Date: "), dueDatePiker
+           );
 
-        editDialog.getDialogPane().setContent(editLayout);
+           editDialog.getDialogPane().setContent(editLayout);
 
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-        editDialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+           ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
+           editDialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
-        editDialog.setResultConverter(buttonType -> {
-            if (buttonType == saveButtonType) {
-                try {
-                    selectedTask.setTitle(titleField.getText());
-                    selectedTask.setDescription(descriptionField.getText());
-                    selectedTask.setPriority(priorityField.getText());
-                    selectedTask.setDueDate(dueDatePiker.getValue());
+           editDialog.setResultConverter(buttonType -> {
+               if (buttonType == saveButtonType) {
+                   try {
+                       selectedTask.setTitle(titleField.getText());
+                       selectedTask.setDescription(descriptionField.getText());
+                       selectedTask.setPriority(priorityField.getText());
+                       selectedTask.setDueDate(dueDatePiker.getValue());
 
-                    loadTaskIntoTable();
-                } catch (DateTimeException e) {
-                    showAlert("Invalid data format. Please use YYYY-MM-DD");
-                }
-            }
-            return null;
-        });
-        editDialog.showAndWait();
+                       loadTaskIntoTable();
+                   } catch (DateTimeException e) {
+                       showAlert("Invalid data format. Please use YYYY-MM-DD");
+                   }
+               }
+               return null;
+           });
+           editDialog.showAndWait();
+
+       } catch (Exception e){
+           System.out.println("All good!");
+       }
     }
+
 
 
     public void deleteTask() {
